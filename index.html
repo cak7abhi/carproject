@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+    <head>
+        <title>carproject</title>
+       
+        <style>
+            body{
+    margin-top: 30px;
+    margin-bottom:30px ;
+    background-color: black;
+    color: rgb(28, 213, 28);
+    text-align: center;
+    font-size: 20px;
+}
+.top{
+    background-color: rgb(192, 212, 205);
+    color: rgb(246, 244, 244);
+    margin: 80px;
+    padding: 20px;
+    border-radius: 30px;
+}
+.buttons{ 
+    margin-bottom: 20px;
+}
+button{
+    background-color: blue;
+    color: white;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    border-color: rgb(234, 241, 243);
+    width: 130px;
+    height: 70px;
+    font-size: 20px;
+}
+
+button:hover{
+    background-color: rgb(6, 14, 68);
+}
+.list{
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    
+}
+.cars{
+    background-color: rgb(9, 9, 67);
+    width: 400px;
+    padding: 19px;
+    margin: 10px;
+    border-radius: 20px;
+}
+.cars:hover{
+    background-color: rgb(92, 90, 144);
+}
+.cars img{
+    width: 60%;
+    border-radius: 20px;
+}
+
+.addcar {
+    animation: fadein 2s ease;
+}
+
+@keyframes fadein {
+    from{
+        opacity: 0;
+        transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: 2;
+  }
+}
+        </style>
+    </head>
+    <body>
+        <h1>CarAbhi7</h1>
+        <h4>welcome to CarAbhi! if you want to get car, there are diffierent cars. it make you travel</h4>
+        <div class="top">
+            <div class="buttons">
+                <button onclick="showall()">All</button>
+                <button onclick="caradd('car')">cars</button>
+                <button onclick="caradd('bike')">bike</button>
+                <button onclick="caradd('jeep')">jeep</button>
+                <button onclick="caradd('bicycle')">bicycle</button>
+            </div>
+            <div class="list">
+                <div class="cars car">
+                    <img src="https://gaadiwaadi.com/wp-content/uploads/2022/11/2023-Honda-WR-V-6-1068x623.jpg">
+                    <h2>car</h2>
+                    <p>INR 1,500,000</p>
+                </div>
+                <div class="cars jeep">
+                    <img src="https://www.topgear.com/sites/default/files/2024/04/1-Jeep-Wrangler-review-2024.jpg">
+                    <h2>jeep</h2>
+                    <p>INR 4,500,000</p>
+                </div>
+                <div class="cars car">
+                    <img src="https://tse2.mm.bing.net/th/id/OIP.M0b1RQ2grxfhxCx0ift3QgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3">
+                    <h2>suz car</h2>
+                    <p>INR 1,300,000</p>
+                </div>
+            </div>
+        <div class="list">
+            <div class="cars car">
+                    <img src="https://www.carscoops.com/wp-content/uploads/2025/03/BMW-3-Series-LWB-1536x864.jpg">
+                    <h2>BMW car</h2>
+                    <p>INR 10,500,000</p>
+                </div>
+                <div class="cars bike">
+                    <img src="https://www.motorcyclistonline.com/resizer/FdmsYbXsRj9utGDlegvD83tjs3c=/1440x0/filters:focal(979x731:989x741)/cloudfront-us-east-1.images.arcpublishing.com/octane/VYCBWWIREBFMJPH77X4G4LBYFI.jpg">
+                    <h2>suziki bike</h2>
+                    <p>INR 500,000</p>
+                </div>
+                <div class="cars jeep">
+                    <img src="https://www.topgear.com/sites/default/files/2022/09/FP022_006JP.jpg">
+                    <h2>gold jeep</h2>
+                    <p>INR 5,500,000</p>
+                </div>
+        </div>
+         <div class="list">
+            <div class="cars bike">
+                    <img src="https://sm.mashable.com/t/mashable_in/photo/default/bmw_r3du.1248.jpg">
+                    <h2>BMNW bike</h2>
+                    <p>INR 800,000</p>
+                </div>
+                <div class="cars bicycle">
+                    <img src="https://i5.walmartimages.com/asr/7c55a1cf-70ac-4b28-a1dd-b157f58eb69d.12063d00af2439853caf366e65ccfba1.jpeg">
+                    <h2>bicycle</h2>
+                    <p>INR 40,000</p>
+                </div>
+                <div class="cars bicycle">
+                    <img src="https://th.bing.com/th/id/R.ecc9650941cf212e05dc85b3c6515876?rik=eqtnt0GpDdgLBA&riu=http%3a%2f%2fstaranddaisy.in%2fwp-content%2fuploads%2f2022%2f11%2fskillmax20in9123_mainblue.jpg&ehk=MR15keDnnGRo6csSDdXs734uC9gkPamnaS1p%2bcxLPzY%3d&risl=&pid=ImgRaw&r=0">
+                    <h2>sport bicycle</h2>
+                    <p>INR 35,000</p>
+                </div>
+        </div>
+        </div>
+        <h2>
+            phone contact: 93917736633
+        </h2>
+        <h2>
+            Email:abhinay9@gmail
+        </h2>
+        <script>
+            function caradd(cat){
+    let save = document.querySelectorAll(".cars");
+
+    for (let i = 0; i < save.length; i++) {
+        if (save[i].classList.contains(cat)) {
+            save[i].style.display = "block";
+            save[i].classList.add("addcar");
+        } else {
+            save[i].style.display = "none";
+        }
+    }
+}
+
+function showall(){
+    let save = document.querySelectorAll(".cars");
+
+    for ( let i = 0; i<save.length; i++){
+    save[i].style.display ="block";
+    save[i].classList.add("addcar");
+}
+}
+        </script>
+    </body>
+</html>
