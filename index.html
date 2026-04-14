@@ -1,122 +1,155 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>abhi7</title>
+    <title>cak7</title>
+    <style>
+        body{
+            background-color: black;
+            background-size: cover;
+            text-align: center;
+            color: rgb(247, 224, 12);
+        }
+        input{
+            background-color: rgb(224, 134, 134);
+            padding: 7px;
+            margin-right: 7px;
+            border-radius: 20px;
+            border: 3px solid blue;
+            width: 200px;
+        }
+        button{
+            background-color: blue;
+            color: white;
+            padding: 7px;
+            border-radius: 20px;
+            width: 60px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover{
+            background-color: rgb(46, 150, 225);
+        }
 
-<style>
-body{
-background-image:url("https://img.freepik.com/premium-photo/huge-audience-is-watching-movie-movie-theatre-with-front-rear-views_973144-8332.jpg");
-color: rgb(238, 238, 230);
-text-align: center;
-font-family: Arial;
-background-size: cover;
-padding-bottom: 50px;
-}
+        #result{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card{
+            background-color: rgba(0, 0, 0, 0.685);
+             margin: 25px;
+            border: 4px solid yellow;
+            width: 230px;
+            padding: 20px;
+            transition: 0.2s;
+        }
+        .card:hover{
+            transform: scale(1.07);
+            box-shadow: 0 0 30px blue;
+        }
+        img{
+            width: 100%;
+        }
 
-.card{
-border: 2px solid red;
-padding: 10px;
-margin: 10px;
-width: 200px;
-background-color: rgba(0,0,0,0.7);
-}
+        /* MOBILE DESIGN */
+@media (max-width: 600px){
 
-img{
-width: 100%;
+h1{
+font-size: 20px;
 }
 
 input{
-background-color: white;
-color: black;
-padding: 5px;
-width: 150px;
-border-radius: 15px;
+width: 70%;
 }
 
-button{
-background-color: yellow;
-color: black;
-width: 90px;
-border-radius: 15px;
-padding: 5px;
-margin-left: 5px;
-}
-
-button:hover{
-background-color: orange;
+.card{
+width: 90%;
 }
 
 #result{
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
+flex-direction: column;
+align-items: center;
 }
 
-.bottom{
-.bottom{
-margin-top: 40px;
-padding: 20px;
-background-color: rgba(0,0,0,0.8);
-color: white;
 }
-}
-</style>
+
+
+    </style>
 </head>
-
 <body>
+    <h1>Abhi7 movies app7</h1>
+    <p>enjoy watching movies at home</p>
 
-<h1>Abhi7 Movies App</h1>
-<p>Enjoy watching movies at home</p>
+    <h2>Movie Search</h2>
+    <input id="search" placeholder="enter movies">
+    <button onclick="addmovie()">Click</button>
 
-<input id="search" placeholder="Enter movie">
-<button onclick="addmovies()">Search</button>
-<div id="result"></div>
-<div class="bottom">
-<p>Contact: 94354359453</p>
-<p>abhinay@gmail.com</p>
-</div>
+    <div id="result"></div>
+
+    <h3>Listed</h3>
+    <div id="list"></div>
 
 <script>
+let save = JSON.parse(localStorage.getItem("myyfav")) || [];
 
-async function addmovies(){
+showFav();
 
-let name = document.getElementById("search").value;
+async function addmovie(){
+    let name = document.getElementById("search").value;
 
-if(name === ""){
-document.getElementById("result").innerHTML = "Please enter movie name";
-return;
-}
+    if(name === ""){
+        document.getElementById("result").innerHTML = "please enter movie";
+        return;
+    }
 
-let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
+    document.getElementById("result").innerHTML = "loading...";
 
-let res = await fetch(url);
-let data = await res.json();
+    let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
 
-let text = "";
+    let res = await fetch(url);
+    let data = await res.json();
+
+    let text = "";
 
 if(data.Search){
+    data.Search.forEach(function(movie){
+        let poster = movie.Poster !== "N/A"
+        ? movie.Poster
+        : "https://via.placeholder.com/200";
 
-data.Search.forEach(function(movie){
-
-text = text + `
-<div class="card">
-<img src="${movie.Poster}">
-<p><b>${movie.Title}</b></p>
-<p>${movie.Year}</p>
-</div>
-`;
-
-});
-
-}
-else{
-text = "No movies found";
-}
-
-document.getElementById("result").innerHTML = text;
-
+        text += `<div class="card">
+            <a href="https://www.imdb.com/title/${movie.imdbID}" target="_blank">
+<img src="${poster}">
+</a>
+            <p>${movie.Title}</p>
+            <p>${movie.Year}</p> 
+            <button onclick='addFav("${movie.Title}")'>add list</button>
+        </div>`;
+    });
+}else{
+    text = "no movie found";
 }
 
+    document.getElementById("result").innerHTML = text;
+}
+
+function addFav(title){
+    if(!save.includes(title)){
+        save.push(title);
+        localStorage.setItem("myyfav", JSON.stringify(save));
+        showFav();
+        alert("my favourite");
+    }
+}
+
+function showFav(item){
+    let text = "";
+
+    save.forEach(function(item){
+        text = text + "<p>" + item + "</p>";
+    });
+    document.getElementById("list").innerHTML = text;
+}
 </script>
 
 </body>
