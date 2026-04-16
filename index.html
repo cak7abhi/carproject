@@ -1,155 +1,212 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>cak7</title>
-    <style>
-        body{
-            background-color: black;
-            background-size: cover;
-            text-align: center;
-            color: rgb(247, 224, 12);
-        }
-        input{
-            background-color: rgb(224, 134, 134);
-            padding: 7px;
-            margin-right: 7px;
-            border-radius: 20px;
-            border: 3px solid blue;
-            width: 200px;
-        }
-        button{
-            background-color: blue;
-            color: white;
-            padding: 7px;
-            border-radius: 20px;
-            width: 60px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        button:hover{
-            background-color: rgb(46, 150, 225);
-        }
+<title>Abhi7 Movies App</title>
 
-        #result{
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .card{
-            background-color: rgba(0, 0, 0, 0.685);
-             margin: 25px;
-            border: 4px solid yellow;
-            width: 230px;
-            padding: 20px;
-            transition: 0.2s;
-        }
-        .card:hover{
-            transform: scale(1.07);
-            box-shadow: 0 0 30px blue;
-        }
-        img{
-            width: 100%;
-        }
+<style>
 
-        /* MOBILE DESIGN */
-@media (max-width: 600px){
-
-h1{
-font-size: 20px;
+body{
+font-family: Arial;
+text-align: center;
+margin: 0;
+transition: 0.3s;
 }
 
+/* DARK MODE (default) */
+body.dark{
+background: black;
+color: white;
+}
+
+/* LIGHT MODE */
+body.light{
+background: #f2f2f2;
+color: black;
+}
+
+/* input */
 input{
-width: 70%;
+padding: 10px;
+border-radius: 20px;
+width: 250px;
 }
 
+/* buttons */
+button{
+padding: 6px;
+margin: 5px;
+border-radius: 15px;
+cursor: pointer;
+}
+
+/* cards */
+.card{
+border: 2px solid red;
+padding: 10px;
+margin: 10px;
+width: 200px;
+background-color: rgba(0,0,0,0.7);
+transition: 0.3s;
+}
+
+body.light .card{
+background-color: white;
+color: black;
+}
+
+.card:hover{
+transform: scale(1.05);
+box-shadow: 0 0 15px yellow;
+}
+
+img{
+width: 100%;
+}
+
+/* layout */
+#result{
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+
+#favList{
+margin-top: 20px;
+}
+
+/* mobile */
+@media (max-width: 600px){
 .card{
 width: 90%;
 }
-
-#result{
-flex-direction: column;
-align-items: center;
 }
 
-}
+</style>
 
-
-    </style>
 </head>
-<body>
-    <h1>Abhi7 movies app7</h1>
-    <p>enjoy watching movies at home</p>
 
-    <h2>Movie Search</h2>
-    <input id="search" placeholder="enter movies">
-    <button onclick="addmovie()">Click</button>
+<body class="dark">
 
-    <div id="result"></div>
+<h1>Abhi7 Movies App 🎬</h1>
 
-    <h3>Listed</h3>
-    <div id="list"></div>
+<button onclick="toggleMode()">🌙 / ☀️</button>
+
+<p>Enjoy watching movies at home</p>
+
+<input id="search" placeholder="Enter movie name" oninput="searchMovie()">
+
+<div id="result"></div>
+
+<h2>My Favorites ❤️</h2>
+<div id="favList"></div>
 
 <script>
-let save = JSON.parse(localStorage.getItem("myyfav")) || [];
+
+let favorites = JSON.parse(localStorage.getItem("fav")) || [];
+let mode = localStorage.getItem("mode") || "dark";
+let timer; 
+
+// apply saved mode
+document.body.className = mode;
 
 showFav();
 
-async function addmovie(){
-    let name = document.getElementById("search").value;
+// DARK / LIGHT TOGGLE
+function toggleMode(){
 
-    if(name === ""){
-        document.getElementById("result").innerHTML = "please enter movie";
-        return;
-    }
+if(document.body.classList.contains("dark")){
+document.body.classList.remove("dark");
+document.body.classList.add("light");
+localStorage.setItem("mode", "light");
+}
+else{
+document.body.classList.remove("light");
+document.body.classList.add("dark");
+localStorage.setItem("mode", "dark");
+}
 
-    document.getElementById("result").innerHTML = "loading...";
+}
 
-    let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
+// LIVE SEARCH
+async function searchMovie(){
 
-    let res = await fetch(url);
-    let data = await res.json();
+let name = document.getElementById("search").value;
 
-    let text = "";
+if(name.length < 3){
+document.getElementById("result").innerHTML = "";
+return;
+}
 
-if(data.Search){
-    data.Search.forEach(function(movie){
-        let poster = movie.Poster !== "N/A"
-        ? movie.Poster
-        : "https://via.placeholder.com/200";
+clearTimeout(timer);
 
-        text += `<div class="card">
-            <a href="https://www.imdb.com/title/${movie.imdbID}" target="_blank">
+timer = setTimeout(async function(){
+
+document.getElementById("result").innerHTML = "Loading...";
+
+let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
+
+let res = await fetch(url);
+let data = await res.json();
+
+let text = "";
+
+if(data.Response === "False"){
+text = "No movies found";
+}
+else{
+
+data.Search.forEach(function(movie){
+
+let poster = movie.Poster !== "N/A"
+? movie.Poster
+: "https://via.placeholder.com/200";
+
+text = text + `
+<div class="card">
+<a href="https://www.imdb.com/title/${movie.imdbID}" target="_blank">
 <img src="${poster}">
 </a>
-            <p>${movie.Title}</p>
-            <p>${movie.Year}</p> 
-            <button onclick='addFav("${movie.Title}")'>add list</button>
-        </div>`;
-    });
-}else{
-    text = "no movie found";
+<p><b>${movie.Title}</b></p>
+<p>${movie.Year}</p>
+<button onclick='addFav("${movie.Title}")'>❤️ Favorite</button>
+</div>
+`;
+
+});
+
 }
 
-    document.getElementById("result").innerHTML = text;
+document.getElementById("result").innerHTML = text;
+
+}, 350);
+
 }
 
+// ADD FAVORITE
 function addFav(title){
-    if(!save.includes(title)){
-        save.push(title);
-        localStorage.setItem("myyfav", JSON.stringify(save));
-        showFav();
-        alert("my favourite");
-    }
+
+if(!favorites.includes(title)){
+favorites.push(title);
+localStorage.setItem("fav", JSON.stringify(favorites));
+showFav();
+alert("Added ❤️");
 }
 
-function showFav(item){
-    let text = "";
-
-    save.forEach(function(item){
-        text = text + "<p>" + item + "</p>";
-    });
-    document.getElementById("list").innerHTML = text;
 }
+
+// SHOW FAVORITES
+function showFav(){
+
+let text = "";
+
+favorites.forEach(function(item){
+text = text + "<p>" + item + "</p>";
+});
+
+document.getElementById("favList").innerHTML = text;
+
+}
+
 </script>
 
 </body>
