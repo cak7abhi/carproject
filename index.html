@@ -1,213 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<title>Abhi7 Movies App</title>
-
-<style>
-
+    <head>
+        <title>
+            cak7
+        </title>
+      <style>
 body{
-font-family: Arial;
-text-align: center;
-margin: 0;
-transition: 0.3s;
+    text-align: center;
+    transform: 0.4;
 }
-
-/* DARK MODE (default) */
-body.dark{
-background: black;
-color: white;
-}
-
-/* LIGHT MODE */
 body.light{
-background: #f2f2f2;
-color: black;
+    background-color: rgb(254, 178, 182);
+    color: black;
 }
-
-/* input */
-input{
-padding: 10px;
-border-radius: 20px;
-width: 250px;
+body.dark{
+    background-color: black;
+    color: white;
 }
-
-/* buttons */
-button{
-padding: 6px;
-margin: 5px;
-border-radius: 15px;
-cursor: pointer;
-}
-
-/* cards */
-.card{
-border: 2px solid red;
-padding: 10px;
-margin: 10px;
-width: 200px;
-background-color: rgba(0,0,0,0.7);
-transition: 0.3s;
-}
-
 body.light .card{
-background-color: white;
-color: black;
+    background-color: rgb(8, 3, 3);
+    color: rgb(244, 244, 248);
+}
+button{
+    background-color: rgb(234, 10, 10);
+    border-radius: 20px;
+    padding: 9px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    width: 140px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover{
+    background-color: rgb(235, 108, 108);
+    box-shadow: 0 0 13px rgb(165, 58, 58);
+    transform: scale(1.05);
+}
+input{
+    padding: 8px;
+    width: 250px;
+    border: 2px solid rgb(210, 12, 12);
+    background-color: rgb(176, 176, 235) ;
+    border-radius: 20px;
+    margin-bottom: 15px;
 }
 
-.card:hover{
-transform: scale(1.05);
-box-shadow: 0 0 15px yellow;
-}
-
-img{
-width: 100%;
-}
-
-/* layout */
 #result{
-display: flex;
-flex-wrap: wrap;
-justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-#favList{
-margin-top: 20px;
-}
-
-/* mobile */
-@media (max-width: 600px){
 .card{
-width: 90%;
+    border: 3px solid red;
+    width: 180px;
+    background-color: rgba(245, 245, 62, 0.866);
+    padding: 10px;
+    margin: 20px;
+    transition: 0.4s;
 }
+.card:hover{
+    box-shadow: 0 0 50px rgb(248, 4, 4);
+    transform: scale(1.05);
+}
+img{
+    width: 100%;
+}
+#list {
+    background-color: grey;
+    width: 300px;
+    margin: 20px auto;   /* ✅ THIS CENTERS */
+    padding: 10px;
+    border-radius: 10px;
 }
 
-</style>
+@media(max-width: 600px){
+    .card{
+        width: 90%;
+    }
+}
 
-</head>
+      </style>
+    </head>
+    <body class="dark">
+        <h1>Abhi7 movie</h1>
+        <button onclick="tagglemode()">Dark | light red</button>
 
-<body class="dark">
+        <h2>Movie: search</h2>
+        <input id="search" placeholder="enter movie" oninput="addmovie()">
+        <div id="result"></div>
+        <h3>Add List</h3>
+        <div id="list"></div>
+        <h3>contact:9391773648</h3>
+        <h3>abhinay@gmail</h3>
 
-<h1>Abhi7 Movies App 🎬</h1>
-
-<button onclick="toggleMode()">🌙 / ☀️</button>
-
-<p>Enjoy watching movies at home</p>
-
-<input id="search" placeholder="Enter movie name" oninput="searchMovie()">
-
-<div id="result"></div>
-
-<h2>My Favorites ❤️</h2>
-<div id="favList"></div>
-
-<script>
-
-let favorites = JSON.parse(localStorage.getItem("fav")) || [];
+        <script>
+let favourite = JSON.parse(localStorage.getItem("myfav")) || [];
 let mode = localStorage.getItem("mode") || "dark";
-let timer; 
+let timer;
 
-// apply saved mode
-document.body.className = mode;
+document.body.className= mode;
+showme();
 
-showFav();
-
-// DARK / LIGHT TOGGLE
-function toggleMode(){
-
-if(document.body.classList.contains("dark")){
-document.body.classList.remove("dark");
-document.body.classList.add("light");
-localStorage.setItem("mode", "light");
+function tagglemode(){
+    if(document.body.classList.contains("dark")){
+        document.body.classList.remove("dark");
+        document.body.classList.add("light");
+        localStorage.setItem("mode", "light");
+    }
+    else{
+        document.body.classList.remove("light");
+        document.body.classList.add("dark");
+        localStorage.setItem("mode", "dark");
+    }
 }
-else{
-document.body.classList.remove("light");
-document.body.classList.add("dark");
-localStorage.setItem("mode", "dark");
+async function addmovie(){
+    let name =document.getElementById("search").value;
+ if(name.length <3){
+    document.getElementById("result").innerHTML= "";
+    return;
+ }
+ clearTimeout(timer);
+ timer=setTimeout(async function(){
+ document.getElementById("result").innerHTML = "wait, Loading";
+ let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
+
+ let res = await fetch(url);
+ let data = await res.json();
+
+ let text = "";
+
+ if(data.Respons === "False"){
+    text = "no movie found";
+ }
+ else{
+    data.Search.forEach(function(movie){
+        let poster = movie.Poster !== "N/A"
+        ?movie.Poster
+        : "https://via.placeholder.com/200";
+
+        text = text + ` <div class = "card">
+        <a href = "https://www.imdb.com/title/${movie.imdbID}"target="_blank">
+        <img src="${poster}"></a>
+        <p><br>${movie.Title}<br></p>
+        <p>${movie.Year}</p>
+         
+        <button onclick = 'addlist("${movie.Title}")'>Add list</button>
+        </div>
+        `;
+    })
+ }
+ document.getElementById("result").innerHTML= text; 
+},450);
 }
-
+function addlist(title){
+    if(!favourite.includes(title)){
+        favourite.push(title);
+        localStorage.setItem("myfav", JSON.stringify(favourite));
+        alert("my favourite add");
+    }
 }
+function showme(){
+ let text = "";
 
-// LIVE SEARCH
-async function searchMovie(){
+ favourite.forEach(function(item){
+    text = text + "<p>" + item + "</p>";
 
-let name = document.getElementById("search").value;
-
-if(name.length < 3){
-document.getElementById("result").innerHTML = "";
-return;
-}
-
-clearTimeout(timer);
-
-timer = setTimeout(async function(){
-
-document.getElementById("result").innerHTML = "Loading...";
-
-let url = "https://www.omdbapi.com/?apikey=58cdd56b&s=" + name;
-
-let res = await fetch(url);
-let data = await res.json();
-
-let text = "";
-
-if(data.Response === "False"){
-text = "No movies found";
-}
-else{
-
-data.Search.forEach(function(movie){
-
-let poster = movie.Poster !== "N/A"
-? movie.Poster
-: "https://via.placeholder.com/200";
-
-text = text + `
-<div class="card">
-<a href="https://www.imdb.com/title/${movie.imdbID}" target="_blank">
-<img src="${poster}">
-</a>
-<p><b>${movie.Title}</b></p>
-<p>${movie.Year}</p>
-<button onclick='addFav("${movie.Title}")'>❤️ Favorite</button>
-</div>
-`;
-
-});
-
-}
-
-document.getElementById("result").innerHTML = text;
-
-}, 350);
-
+    document.getElementById("list").innerHTML = text; 
+ })
 }
 
-// ADD FAVORITE
-function addFav(title){
-
-if(!favorites.includes(title)){
-favorites.push(title);
-localStorage.setItem("fav", JSON.stringify(favorites));
-showFav();
-alert("Added ❤️");
-}
-
-}
-
-// SHOW FAVORITES
-function showFav(){
-
-let text = "";
-
-favorites.forEach(function(item){
-text = text + "<p>" + item + "</p>";
-});
-
-document.getElementById("favList").innerHTML = text;
-
-}
-
-</script>
-
-</body>
+        </script>
+    </body>
 </html>
